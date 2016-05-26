@@ -141,15 +141,23 @@ bool Sprite::Jump( ) {
 void Sprite::Duck( ) {
   if ( x < 64 ) return;
   if ( Collide( x, y+Height()+1 ) == STPipeCapLeft && Collide( RightX() , y+Height()+1 ) == STPipeCapRight ) {
+    Game->SFX = SFX_Pipe;
     Game->Event = ETPipeDrop;
     Game->EventCounter = 0;
   }
 }
 void Sprite::HeadCollision( ) {
   if ( Flags() & 0b10 ) return;
+
+  if ( Collide( x, y-1 ) == STTopPipeCapLeft && Collide( RightX(), y-1 ) == STTopPipeCapRight ) {
+    if ( x < 64 ) return;
+    Game->SFX = SFX_Pipe;
+    Game->Event = ETPipeRise;
+    Game->EventCounter = 0;
+  }
+
   byte LeftCheck = Collide( x, y-1 );
   byte RightCheck = Collide( RightX(), y-1 );
-  
   if ( LeftCheck == STQBlock || LeftCheck == STMushBlock ) {
     Game->Level.HandleObject( x / TileSize, (y-1) / TileSize );
   }
@@ -272,7 +280,10 @@ void Map::GenerateRoom( int RoomNum ) {
   uint8_t Ceiling = ( !( Game->MapNumber % 2 ) ) ? 8 : 0;
   int Gap = 0;
   int tSpawnBarrier = RoomNum*RoomWidth;
-  if ( !RoomNum ) AddPipe( 1, Floor-2 );
+  if ( !RoomNum ) {
+    if ( Ceiling ) AddTopPipe( 1, Ceiling + 1 );
+    else AddPipe( 1, Floor-2 );
+  }
   for ( int x = 0; x < RoomWidth; x++ ) {
     if ( Ceiling ) rooms[RoomNum % MapRooms].SetTile(x, Ceiling);
     if ( !Gap ) {
@@ -300,7 +311,7 @@ void Map::GenerateRoom( int RoomNum ) {
               if ( RoomNum > 8 ) Game->AddMob( BoltSprite, tSpawnBarrier + x, 2 );
             }
           }
-          if ( !random( 16 ) && !Gap && Floor > Ceiling + 5 ) {
+          if ( !random( 16 ) && !Gap && Floor > Ceiling + 5 && x != RoomWidth-1 ) {
             int y = random( max( Floor - 7, Ceiling + 2 ), Floor - 3 );
             if ( !random(4) ) AddObject ( STMushBlock, tSpawnBarrier + x, y );
             else              AddObject ( STQBlock, tSpawnBarrier + x, y );
@@ -310,7 +321,10 @@ void Map::GenerateRoom( int RoomNum ) {
     }
     else Gap--;
   }
-  if ( RoomNum == LastRoom ) AddPipe( MaxXTile() - 2, Floor-2 );
+  if ( RoomNum == LastRoom ) {
+    if ( Ceiling ) AddTopPipe ( MaxXTile() - 2, Ceiling + 1 );
+    else AddPipe( MaxXTile() - 2, Floor-2 );
+  }
   if ( tSpawnBarrier > SpawnBarrier ) SpawnBarrier = tSpawnBarrier;
 }
 void Map::AddPipe( int x, int y ) {
@@ -320,6 +334,12 @@ void Map::AddPipe( int x, int y ) {
     AddObject( STPipeLeft,     x,   a );
     AddObject( STPipeRight,    x+1, a );
   }
+}
+void Map::AddTopPipe( int x, int y ) {
+  AddObject( STTopPipeCapLeft,  x,   y+1 );
+  AddObject( STTopPipeCapRight, x+1, y+1 );
+  AddObject( STPipeLeft,     x,   y );
+  AddObject( STPipeRight,    x+1, y );
 }
 void Map::AddObject( byte type, int tX, int tY ) {
   if ( CheckObject( tX, tY ) ) return;
@@ -406,12 +426,13 @@ SquarioGame::SquarioGame( Arduboy * display ) {
   for ( uint8_t a = 0; a < SpriteCap; a++ ) Mobs[a].Game = this;
 }
 void SquarioGame::NewGame( ) {
+  Health = 0;
   Score = 0;
   DistancePoints = 0;
   Coins = 0;
   Lives = 1;
   MapNumber = 1;
-  Player.LoadSprite( SmallSquarioSprite, 10, SpawnY );
+  Player.LoadSprite( SmallSquarioSprite, 10, SpawnY() );
   StartLevel( );
 }
 void SquarioGame::StartLevel( ) {
@@ -420,6 +441,10 @@ void SquarioGame::StartLevel( ) {
   Level.NewMap( );
   while ( Player.Falling() ) Player.Move();
   AdjustCamera( );
+}
+int SquarioGame::SpawnY() {
+  if ( MapNumber % 2 ) return 0;
+  else return 88;
 }
 void SquarioGame::ProcessButtons( ) {
   uint8_t MaxSpeed = ButtonState[ButtonRun] ? 4 : 3;
@@ -463,6 +488,10 @@ void SquarioGame::Cycle( ) {
     Player.y++;
     EventCounter++;
   }
+  if ( Event == ETPipeRise && EventCounter < Player.Height()) {
+    Player.y--;
+    EventCounter++;
+  }
   else if ( Event == ETDeath ) {
     if ( EventCounter > 25 ) Player.y--;
     else Player.y+=2;
@@ -481,10 +510,9 @@ void SquarioGame::Cycle( ) {
         if ( Mobs[a].SpriteData == MushroomSprite ) {
           Mobs[a].Deactivate();
           Score += POINTSMushroom;
-          if ( Player.SpriteData == SmallSquarioSprite ) {
-            Player.LoadSprite( BigSquarioSprite, Player.x, Player.y-8 );
-            SFX = SFX_Mushroom;
-          }
+          SFX = SFX_Mushroom;
+          if ( Player.SpriteData == SmallSquarioSprite ) Player.LoadSprite( BigSquarioSprite, Player.x, Player.y-8 );
+          else if ( Health < 5 ) Health++;
         }
         else if ( Player.Falling() ) {
           Mobs[a].Deactivate();
@@ -493,16 +521,16 @@ void SquarioGame::Cycle( ) {
           if ( ButtonState[ ButtonJump ] ) { Player.vy = -10; }
           else { Player.vy = -4; }          
         }
-        else {
-          if ( !EventCounter && Player.Height() == TileSize ) {
-            Event = ETDeath;
-            EventCounter = 30;
+        else if ( !EventCounter ) {
+          if ( Health > 0 ) Health--;
+          else {
+            if ( Player.Height() == TileSize ) Event = ETDeath;
+            if ( Player.Height() > TileSize ) {
+              Player.LoadSprite( SmallSquarioSprite, Player.x, Player.y+8 );
+              SFX = SFX_Hit;
+            }
           }
-          if ( !EventCounter && Player.Height() > TileSize ) {
-            Player.LoadSprite( SmallSquarioSprite, Player.x, Player.y+8 );
-            SFX = SFX_Hit;
-            EventCounter = 30;
-          }
+          EventCounter = 30;
         }
       }
     }
@@ -510,12 +538,12 @@ void SquarioGame::Cycle( ) {
   if ( Event == ETPlaying && Player.y > MapPixelHeight ) { Event = ETDeath; EventCounter = 25; }
   if ( Event == ETDeath && !EventCounter ) Die();
   if ( Event == ETPlaying && EventCounter ) EventCounter--;
-  if ( Event == ETPipeDrop && EventCounter == Player.Height() ) {
+  if ( ( Event == ETPipeDrop || Event == ETPipeRise ) && EventCounter == Player.Height() ) {
     EventCounter = 0;
     DistancePoints += Player.x / TileSize;
     MapNumber++;
     Player.x = 10;
-    Player.y = SpawnY;
+    Player.y = SpawnY();
     StartLevel( );
   }
 }
@@ -547,9 +575,10 @@ void SquarioGame::Die( ) {
   Lives--;
   Draw();
   if ( Lives ) {
-    Player.x = 10;
-    Player.y = SpawnY;
+    Health = 0;
+    Player.LoadSprite( SmallSquarioSprite, 10, SpawnY() );
     StartLevel( );
+    delay(200);
   }
   else {
     DistancePoints += Player.x / TileSize;
@@ -590,6 +619,11 @@ void SquarioGame::DrawMap( ) {
     Display->drawBitmap( 64 - mountainOffset, mountainYOffset,OverworldBG,64,16,1);
     Display->drawBitmap(128 - mountainOffset, mountainYOffset,OverworldBG,64,16,1);
   }
+  else {
+    for ( uint8_t a = 0; a < 196; a += 96 ) {
+      Display->drawBitmap(  a - ( CameraX / 4 ) % 96, mountainYOffset+20, UndergroundBricks, 37, 24, 1 );
+    }
+  }
   for ( int x = CameraX / TileSize; x < (CameraX / TileSize) + 17; x++ ) {
     for ( int y = CameraY / TileSize; y < (CameraY / TileSize) + 9; y++ ) {
       if ( Level.CheckTile( x, y ) ) {
@@ -604,6 +638,8 @@ void SquarioGame::DrawMap( ) {
           case STBQBlock:       tempTile = tBQBlock; break;
           case STPipeCapLeft:   tempTile = tPipeCapLeft; break;
           case STPipeCapRight:  tempTile = tPipeCapRight; break;
+          case STTopPipeCapLeft:   tempTile = tTopPipeCapLeft; break;
+          case STTopPipeCapRight:  tempTile = tTopPipeCapRight; break;
           case STPipeLeft:      tempTile = tPipeLeft; break;
           case STPipeRight:     tempTile = tPipeRight; break;
         }
@@ -615,13 +651,23 @@ void SquarioGame::DrawMap( ) {
     }
   }
 }
+void SquarioGame::DrawPlayer( ) {
+  Player.Draw();
+  if ( Health ) {
+    for ( uint8_t a = 0; a < Health; a++ ) {
+      Display->drawFastHLine( Player.x + 1 - CameraX, Player.y+11-(a*2)-CameraY, 6, WHITE );
+      Display->drawFastHLine( Player.x + 1 - CameraX, Player.y+10-(a*2)-CameraY, 6, WHITE );
+    }
+  }  
+}
 void SquarioGame::Draw() {
   switch ( Event ) {
     case ETDeath:
     case ETPlaying:   DrawMap(); DrawMobs(); 
-                      if ( !(EventCounter % 2) ) Player.Draw();
+                      if ( !(EventCounter % 2) ) DrawPlayer();
                       break;
-    case ETPipeDrop:  Player.Draw(); DrawMap(); DrawMobs(); break;
+    case ETPipeDrop:
+    case ETPipeRise:  DrawPlayer(); DrawMap(); DrawMobs(); break;
   }
 }
 void SquarioGame::AddMob( const unsigned char * DataPointer, int x, int y ) {
@@ -656,7 +702,6 @@ bool SquarioGame::ButtonOffCD( ) {
   if ( millis() > lastPress + BUTTONCD ) return true;
   return false;
 }
-
 int SquarioGame::getTextOffset(int s) {
   if (s > 9999) { return 20; }
   if (s > 999) { return 15; }

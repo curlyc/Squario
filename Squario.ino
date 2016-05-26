@@ -105,8 +105,8 @@ void loop() {
       Game.Cycle();
       if ( Game.Event ) Game.Draw();
       display.setCursor(0,0);
-//    display.print("Score: ");
-//    display.print(Game.Score);
+      //display.print(F("Score: "));
+      //display.print(Game.Score);
       display.display();
     }
   }

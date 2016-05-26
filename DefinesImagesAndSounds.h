@@ -15,7 +15,6 @@
 #define MapRooms      3
 #define MapObjects    30
 #define SpriteCap     10
-#define SpawnY        64
 
 #define POINTSMushroom  100
 #define POINTSKill      20
@@ -263,202 +262,6 @@ PROGMEM const unsigned char BoltSprite[] {
   0b00000000,
 };
 
-PROGMEM const unsigned char tHammer[] = {
-  0b00000000,
-  0b00001111,
-  0b00001001,
-  0b11111001,
-  0b11111001,
-  0b00001001,
-  0b00001111,
-  0b00000000
-};
-PROGMEM const unsigned char tHammer0[] = {
-0b00100000,
-0b01010000,
-0b10001000,
-0b00000100,
-0b10000010,
-0b01000001,
-0b10100010,
-0b01010100,
-0b10001000,
-0b00000000,
-0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-
-0b00000000,
-0b00000000,
-0b00000000,
-0b00000001,
-0b00000000,
-0b00000000,
-0b00000000,
-0b00000001,
-0b00000010,
-0b00000101,
-0b00000110,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000 
-};
-PROGMEM const unsigned char tHammer1[] = {
-0b00011111,
-0b00010001,
-0b00010001,
-0b11110001,
-0b11110001,
-0b00010001,
-0b00010001,
-0b00011111,
-
-0b00000000,
-0b00000000,
-0b00000000,
-0b00000111,
-0b00000111,
-0b00000000,
-0b00000000,
-0b00000000
-};
-PROGMEM const unsigned char tHammer2[] = {
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-0b00000000,
-0b00000000,
-0b10001000,
-0b01010100,
-0b10100010,
-0b01000001,
-0b10000010,
-0b00000100,
-0b10001000,
-0b01010000,
-0b00100000,
-
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-0b00000110,
-0b00000101,
-0b00000010,
-0b00000001,
-0b00000000,
-0b00000000,
-0b00000000,
-0b00000001,
-0b00000000,
-0b00000000,
-0b00000000
-};
-PROGMEM const unsigned char tHammer3[] = {
-0b00011000,
-0b00011000,
-0b00011000,
-0b00011000,
-0b00011000,
-0b00011000,
-0b11111111,
-0b10000001,
-0b10000001,
-0b10000001,
-0b11111111
-};
-PROGMEM const unsigned char tHammer3m[] {
-0b11111111,
-0b10000001,
-0b10000001,
-0b10000001,
-0b11111111,
-0b00011000,
-0b00011000,
-0b00011000,
-0b00011000,
-0b00011000,
-0b00011000
-};
-PROGMEM const unsigned char tHammer4[] = {
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-0b01100000,
-0b10100000,
-0b01000000,
-0b10000000,
-0b00000000,
-0b00000000,
-0b00000000,
-0b10000000,
-0b00000000,
-0b00000000,
-0b00000000,
-
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-0b00000000,
-0b00000000,
-0b00010001,
-0b00101010,
-0b01000101,
-0b10000010,
-0b01000001,
-0b00100000,
-0b00010001,
-0b00001010,
-0b00000100
-};
-PROGMEM const unsigned char tHammer4m[] = {
-0b00000000,
-0b00000000,
-0b00000000,
-0b10000000,
-0b00000000,
-0b00000000,
-0b00000000,
-0b10000000,
-0b01000000,
-0b10100000,
-0b01100000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-
-0b00000100,
-0b00001010,
-0b00010001,
-0b00100000,
-0b01000001,
-0b10000010,
-0b01000101,
-0b00101010,
-0b00010001,
-0b00000000,
-0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-//0b00000000,
-};
-
 PROGMEM const unsigned char tMask[] = { 0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF };
 PROGMEM const unsigned char tBrick[] = { 0xFF,0xA9,0xA9,0xB9,0xA9,0xEF,0xA9,0xFF };	// 3	Empty
 PROGMEM const unsigned char tQBlock[] = { 0xFF,0x81,0x85,0xB5,0x95,0x9D,0x81,0xFF };
@@ -466,8 +269,22 @@ PROGMEM const unsigned char tBQBlock[] =		{ 0xFF,0x81,0xA5,0x81,0x81,0xA5,0x81,0
 
 PROGMEM const unsigned char tPipeLeft[] = 		{ 0x00,0x00,0xFF,0x00,0xFF,0x00,0x00,0x00 };	// 4
 PROGMEM const unsigned char tPipeRight[] = 		{ 0x00,0x00,0x00,0x00,0x00,0xFF,0x00,0x00 };	// 5
+
 PROGMEM const unsigned char tPipeCapLeft[] = 	{ 0xFF,0x81,0x81,0xFD,0x81,0x81,0x81,0x81 };	// 6
 PROGMEM const unsigned char tPipeCapRight[] = { 0x81,0x81,0x81,0x81,0x81,0x81,0x81,0xFF };	// 7
+PROGMEM const unsigned char tTopPipeCapLeft [] = { 
+  0b11111111, //0xFF,
+  0b10000001, //0x81,
+  0b10000001,
+  0b10111111, //0xFD,
+  0b10000001,
+  0b10000001,
+  0b10000001,
+  0b10000001
+};
+PROGMEM const unsigned char tTopPipeCapRight [] = {
+  0x81,0x81,0x81,0x81,0x81,0x81,0x81,0xFF
+};
 // 96x32
 PROGMEM const unsigned char TitleSquarioText [] = {
 0x80, 0x60, 0x10, 0x08, 0x0C, 0x06, 0x02, 0x03, 0x81, 0x41, 0x61, 0x21, 0xE1, 0x01, 0x01, 0x01,
@@ -522,7 +339,16 @@ PROGMEM const unsigned char OverworldBG [] = { // 64x16
 0x00, 0x00, 0x00, 0xFF, 0x01, 0x01, 0x01, 0x01, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x3F, 0x00, 0x00,
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x3F, 0x00, 0x00, 0x00, 0x1F
 };
-
+// 37x24
+PROGMEM const unsigned char UndergroundBricks [] = {
+0x00, 0x14, 0x00, 0x14, 0x00, 0x14, 0x00, 0x14, 0x40, 0x00, 0x40, 0x00, 0x40, 0x00, 0x54, 0x80,
+0x44, 0x80, 0x44, 0x80, 0x44, 0x80, 0x44, 0x00, 0x44, 0x00, 0x44, 0x00, 0x54, 0x00, 0x40, 0x00,
+0x40, 0x00, 0x40, 0x00, 0x40, 0x50, 0xA0, 0x50, 0xA0, 0x55, 0xA0, 0x51, 0xA0, 0x55, 0x20, 0x00,
+0x20, 0x00, 0x20, 0x55, 0x02, 0x41, 0x02, 0x41, 0x02, 0x41, 0x02, 0x55, 0x02, 0x10, 0x02, 0x10,
+0x02, 0x95, 0x00, 0x90, 0x00, 0x90, 0x00, 0x10, 0x00, 0x15, 0x15, 0x00, 0x10, 0x00, 0x10, 0x00,
+0x10, 0x00, 0x15, 0x00, 0x10, 0x00, 0x10, 0x00, 0x15, 0x00, 0x10, 0x00, 0x10, 0x00, 0x10, 0x00,
+0x15, 0x00, 0x00, 0x00, 0x00, 0x00, 0xAA, 0x00, 0x80, 0x00, 0xAA, 0x00, 0x00, 0x00, 0x00, 
+};
 PROGMEM const byte Verse [] = {
 0x90,47, 0,170, 
 0x80, 0,170, 
@@ -588,6 +414,7 @@ PROGMEM const unsigned int SFXFrequencies [] {
   nC5, nC5S, nD5, nD5S, nE5,
   nC6, nE6, nB5
 };
+PROGMEM const byte SFX_Pipe [] = { 0, 32, 0xD1, 0xC1, 0xB1, 0xA3, 0xD1, 0xC1, 0xB1, 0xA1, 0xFF };
 PROGMEM const byte SFX_Hit [] = { 0, 16, 0xC1, 0xB1, 0xA1, 0x91, 0xFF };
 PROGMEM const byte SFX_Jump [] = { 0, 16, 0x21, 0x11, 0x31, 0x21, 0xFF };
 PROGMEM const byte SFX_Mushroom [] = { 0, 64, 0x41, 0x41, 0x51, 0x51, 0x61, 0x61, 0x71, 0x71, 0xFF };
