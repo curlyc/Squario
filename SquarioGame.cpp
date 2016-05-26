@@ -2,18 +2,19 @@
 #include "DefinesImagesAndSounds.h"
 #include "SquarioGame.h"
 
-uint8_t Sprite::Width( )    { return pgm_read_byte( SpriteData + SpriteWidth ); }
-uint8_t Sprite::Height( )   { return pgm_read_byte( SpriteData + SpriteHeight ); }
-uint8_t Sprite::Masks( )    { return pgm_read_byte( SpriteData + SpriteMasks ); }
-uint8_t Sprite::MaxFrame( ) { return pgm_read_byte( SpriteData + SpriteMaxFrame ); }
-byte    Sprite::Flags( )    { return pgm_read_byte( SpriteData + SpriteFlags ); }
+uint8_t Sprite::Width( )          { return pgm_read_byte( SpriteData + SpriteWidth ); }
+uint8_t Sprite::Height( )         { return pgm_read_byte( SpriteData + SpriteHeight ); }
+uint8_t Sprite::Masks( )          { return pgm_read_byte( SpriteData + SpriteMasks ); }
+uint8_t Sprite::MaxFrame( )       { return pgm_read_byte( SpriteData + SpriteMaxFrame ); }
+uint8_t Sprite::CyclesPerFrame( ) { return pgm_read_byte( SpriteData + SpriteCyclesPerFrame ); }
+byte    Sprite::Flags( )          { return pgm_read_byte( SpriteData + SpriteFlags ); }
 const unsigned char * Sprite::FramePointer ( ) {
   int FrameSize = Height() * Width() / 8;
-  return SpriteData + SpriteImageData + ( FrameSize * currentFrame );
+  return SpriteData + SpriteImageData + ( FrameSize * ( currentFrame / CyclesPerFrame() ) );
 }
 const unsigned char * Sprite::MaskPointer ( ) {
   int FrameSize = Height() * Width() / 8;
-  return SpriteData + SpriteImageData + ( FrameSize * MaxFrame() ) + ( FrameSize * currentFrame );
+  return SpriteData + SpriteImageData + ( FrameSize * MaxFrame() ) + ( FrameSize * ( currentFrame / CyclesPerFrame() ) );
 }
 void Sprite::LoadSprite( const unsigned char * DataPointer, int tX, int tY ) {
   SpriteData = DataPointer;
@@ -176,6 +177,9 @@ void Sprite::Draw( ) {
     y - Game->CameraY,
     FramePointer( ),
     Width(), Height(), WHITE );
+    
+  if ( currentFrame+1 < MaxFrame() * CyclesPerFrame() ) currentFrame++;
+  else currentFrame = 0;
 }
 int Sprite::RightX( ) { return x+Width()-1; }
 int Sprite::BottomY( ) { return y+Height()-1; }

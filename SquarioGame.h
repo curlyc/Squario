@@ -78,6 +78,7 @@ class Sprite {
     uint8_t Height( );
     uint8_t Masks( );
     uint8_t MaxFrame( );
+    uint8_t CyclesPerFrame( );
     byte Flags( );
     const unsigned char * FramePointer( );
     const unsigned char * MaskPointer( );
@@ -87,7 +88,7 @@ class Sprite {
     SquarioGame         * Game;
     const unsigned char * SpriteData;
     int                   x, y, vx, vy;
-    uint8_t               currentFrame;
+    int                   currentFrame;
     bool                  Mirrored;
 
 };

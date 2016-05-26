@@ -27,6 +27,7 @@ enum SpriteDataLayout {
   SpriteWidth = 0,
   SpriteHeight,
   SpriteMaxFrame,
+  SpriteCyclesPerFrame,
   SpriteFlags,
   SpriteSpeed,
   SpriteIntelligence,
@@ -35,8 +36,8 @@ enum SpriteDataLayout {
 };
 
 PROGMEM const unsigned char SmallSquarioSprite[] {
-  8, 8, 1, 0, // Width, Height, # of Frames, Flags
-  0, 0,       // Speed, AI Setting
+  8, 8, 2, 10,// Width, Height, # of Frames, Cycles per Frame
+  0, 0, 0,    // Flags, Speed, AI Setting
   1,          // Number of masks
   0b00000000, // Frame 1 Data
   0b00111110,
@@ -46,6 +47,15 @@ PROGMEM const unsigned char SmallSquarioSprite[] {
   0b00100010,
   0b00111110,
   0b00000000,
+
+  0b11111111,
+  0b10000001,
+  0b10000001,
+  0b10000001,
+  0b10000001,
+  0b10000001,
+  0b10000001,
+  0b11111111,
   
   0b00000000, // Frame 1 Mask
   0b10111110,
@@ -54,11 +64,13 @@ PROGMEM const unsigned char SmallSquarioSprite[] {
   0b11111110,
   0b00111110,
   0b10111110,
-  0b00000000
+  0b00000000,
+  
+  0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
 };
 PROGMEM const unsigned char BigSquarioSprite[] {
-  8, 16, 1, 0,  // Width, Height, # of Frames, Flags
-  0, 0,         // Speed, AI Setting
+  8, 16, 1, 1, // Width, Height, # of Frames, Cycles per Frame
+  0, 0, 0,     // Flags, Speed, AI Setting
   1,          // Number of masks
   0b11111110, // Frame 1 data
   0b00000010,
@@ -95,7 +107,7 @@ PROGMEM const unsigned char BigSquarioSprite[] {
   0b10011111
 };
 PROGMEM const unsigned char TriangleoSprite[] {
-  8, 8, 1,    // Width, Height, # of Frames
+  8, 8, 1, 1, // Width, Height, # of Frames, Cycles per Frame
   0b10,       // Flags
   1, 0b11,    // Speed, AI Setting
   1,          // Number of masks
@@ -118,7 +130,7 @@ PROGMEM const unsigned char TriangleoSprite[] {
   0b00000000
 };
 PROGMEM const unsigned char StarmanoSprite[] {
-  8, 8, 1,    // Width, Height, # of Frames
+  8, 8, 1, 1, // Width, Height, # of Frames, Cycles per Frame
   0b10,       // Flags
   2, 0b1111,  // Speed, AI Setting
   1,          // Number of masks
@@ -142,7 +154,7 @@ PROGMEM const unsigned char StarmanoSprite[] {
 
 };
 PROGMEM const unsigned char SmileoSprite[] {
-  8, 8, 1,    // Width, Height, # of Frames
+  8, 8, 1, 1, // Width, Height, # of Frames, Cycles per Frame
   0b10,       // Flags
   2, 0b1,     // Speed, AI Setting
   1,          // Number of masks
@@ -166,7 +178,7 @@ PROGMEM const unsigned char SmileoSprite[] {
 
 };
 PROGMEM const unsigned char MushroomSprite[] {
-  8, 8, 1,    // Width, Height, # of Frames
+  8, 8, 1, 1, // Width, Height, # of Frames, Cycles per Frame
   0b10,       // Flags
   1, 0b1,     // Speed, AI Setting
   1,          // Number of masks
@@ -189,10 +201,10 @@ PROGMEM const unsigned char MushroomSprite[] {
   0b00011000
 };
 PROGMEM const unsigned char BoltSprite[] {
-  16, 16, 1,  // Width, Height, # of Frames
-  0b11,       // Flags
-  2, 0,       // Speed, AI Setting
-  1,          // Number of masks
+  16, 16, 1, 1, // Width, Height, # of Frames, Cycles per Frame
+  0b11,         // Flags
+  2, 0,         // Speed, AI Setting
+  1,            // Number of masks
 
   0b00000000, // Frame 1 data
   0b00000000,
