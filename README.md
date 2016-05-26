@@ -1,6 +1,6 @@
 # Squario
 ### 5/25/16 Update:
-Mushrooms picked up after becoming big Squario will fill him, up to 5 times
+Mushrooms picked up after becoming big Squario will fill him, up to 5 times  
 Added underworld background and flipped the pipes to the ceiling
 
 ### 5/22/16 Update:
