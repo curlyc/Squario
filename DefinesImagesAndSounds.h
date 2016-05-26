@@ -36,7 +36,7 @@ enum SpriteDataLayout {
 };
 
 PROGMEM const unsigned char SmallSquarioSprite[] {
-  8, 8, 2, 10,// Width, Height, # of Frames, Cycles per Frame
+  8, 8, 1, 1,// Width, Height, # of Frames, Cycles per Frame
   0, 0, 0,    // Flags, Speed, AI Setting
   1,          // Number of masks
   0b00000000, // Frame 1 Data
@@ -48,15 +48,6 @@ PROGMEM const unsigned char SmallSquarioSprite[] {
   0b00111110,
   0b00000000,
 
-  0b11111111,
-  0b10000001,
-  0b10000001,
-  0b10000001,
-  0b10000001,
-  0b10000001,
-  0b10000001,
-  0b11111111,
-  
   0b00000000, // Frame 1 Mask
   0b10111110,
   0b11111110,
@@ -65,8 +56,7 @@ PROGMEM const unsigned char SmallSquarioSprite[] {
   0b00111110,
   0b10111110,
   0b00000000,
-  
-  0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
+
 };
 PROGMEM const unsigned char BigSquarioSprite[] {
   8, 16, 1, 1, // Width, Height, # of Frames, Cycles per Frame
