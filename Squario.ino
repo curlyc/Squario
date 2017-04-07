@@ -5,7 +5,7 @@
 #include "SquarioGame.h"
 #include "DefinesImagesAndSounds.h"
 
-Arduboy display;
+Arduboy display; //how did i not notice that lol
 SquarioGame Game( &display );
 
 char text[16];
@@ -15,6 +15,7 @@ bool SoundOn = true;
 
 void setup() {
   display.begin();
+  Serial.begin(9600); //curly added
 }
 uint8_t RandomSeedSeed = 1;
 void TitleScreen() {
@@ -254,9 +255,13 @@ void displayHighScores(byte file) {
       display.print(text);
     }
   }
+  //also tried here
   display.display();
+  
   Game.ActivateButtonCD();
   while ( true ) {
     if ( display.buttonsState() && Game.ButtonOffCD() ) return;
   }
+  Serial.write(display.getBuffer(), 128 * 64 / 8);
+  
 }
